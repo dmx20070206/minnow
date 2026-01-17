@@ -53,7 +53,9 @@ public:
   {
     while ( not in_flight_.empty() ) {
       for ( auto& i : connections_ ) {
-        const shared_ptr<NetworkInterface> interface { i };
+        const shared_ptr<NetworkInterface> interface {
+          i
+        };
         if ( in_flight_.front().first != interface->name() ) {
           cerr << "Transferring frame from " << in_flight_.front().first << " to " << interface->name() << ": "
                << summary( in_flight_.front().second ) << "\n";

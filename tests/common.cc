@@ -44,7 +44,8 @@ void Printer::diagnostic( string_view test_name,
        << " failed after these steps:\n\n";
   unsigned int step_num = 0;
   for ( const auto& step : steps_executed ) {
-    cerr << "  " << step_num++ << "." << "\t" << with_color( step.color, step.text ) << "\n";
+    cerr << "  " << step_num++ << "."
+         << "\t" << with_color( step.color, step.text ) << "\n";
     print_debug_messages( step );
   }
   cerr << with_color( red, "  ***** Unsuccessful " + failing_step.text + " *****\n" );
@@ -126,7 +127,8 @@ void throw_timeout( int signal_number )
 
 Timeout::Timeout()
 {
-  struct sigaction action {};
+  struct sigaction action
+  {};
   action.sa_handler = throw_timeout;
   CheckSystemCall( "sigaction", sigaction( SIGPROF, &action, nullptr ) );
 }

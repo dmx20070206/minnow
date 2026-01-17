@@ -16,33 +16,33 @@ public:
   class Raw
   {
   public:
-    sockaddr_storage storage{}; //!< The wrapped struct itself.
+    sockaddr_storage storage {}; //!< The wrapped struct itself.
     // NOLINTBEGIN (*-explicit-*)
-    operator sockaddr *();
-    operator const sockaddr *() const;
+    operator sockaddr*();
+    operator const sockaddr*() const;
     // NOLINTEND (*-explicit-*)
   };
 
 private:
   socklen_t size_; //< Size of the wrapped address.
-  Raw address_{};  //< A wrapped [sockaddr_storage](@ref man7::socket) containing the address.
+  Raw address_ {}; //< A wrapped [sockaddr_storage](@ref man7::socket) containing the address.
 
   // (Constructer) Constructor from ip/host, service/port, and hints to the resolver.
-  Address(const std::string &node, const std::string &service, const addrinfo &hints);
+  Address( const std::string& node, const std::string& service, const addrinfo& hints );
 
 public:
   // (Constructer) Construct by resolving a hostname and servicename.
-  Address(const std::string &hostname, const std::string &service);
+  Address( const std::string& hostname, const std::string& service );
   // (Constructer) Construct from dotted-quad string ("18.243.0.1") and numeric port.
-  explicit Address(const std::string &ip, std::uint16_t port = 0);
+  explicit Address( const std::string& ip, std::uint16_t port = 0 );
   // (Constructer) Construct from a [sockaddr *](@ref man7::socket).
-  Address(const sockaddr *addr, std::size_t size);
+  Address( const sockaddr* addr, std::size_t size );
   // (Constructer) Default constructor
-  Address() : Address(nullptr, 0) {}
+  Address() : Address( nullptr, 0 ) {}
 
   // Equality comparison.
-  bool operator==(const Address &other) const;
-  bool operator!=(const Address &other) const { return not operator==(other); }
+  bool operator==( const Address& other ) const;
+  bool operator!=( const Address& other ) const { return not operator==( other ); }
 
   //! \name Conversions
   //!@{
@@ -58,7 +58,7 @@ public:
   std::string to_string() const;
 
   // Create an Address from a 32-bit raw numeric IP address
-  static Address from_ipv4_numeric(uint32_t ip_address);
+  static Address from_ipv4_numeric( uint32_t ip_address );
   //!@}
 
   //! \name Low-level operations
@@ -66,9 +66,9 @@ public:
   // (Getter) Size of the underlying address storage.
   socklen_t size() const { return size_; }
   // Const pointer to the underlying socket address storage.
-  const sockaddr *raw() const { return static_cast<const sockaddr *>(address_); }
+  const sockaddr* raw() const { return static_cast<const sockaddr*>( address_ ); }
   // Safely convert to underlying sockaddr type
-  template <typename sockaddr_type>
-  const sockaddr_type *as() const;
+  template<typename sockaddr_type>
+  const sockaddr_type* as() const;
   //!@}
 };
