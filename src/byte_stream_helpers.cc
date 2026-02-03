@@ -1,4 +1,5 @@
 #include "byte_stream.hh"
+#include "debug.hh"
 
 #include <cstdint>
 #include <stdexcept>
@@ -11,6 +12,7 @@ using namespace std;
  */
 void read( Reader& reader, uint64_t max_len, string& out )
 {
+  debug( "read() called" );
   out.clear();
 
   while ( reader.bytes_buffered() and out.size() < max_len ) {

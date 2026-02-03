@@ -10,6 +10,7 @@ void Writer::push( string data )
 {
   // If stream is closed, set error
   if ( is_closed_ && !data.empty() ) {
+    // debug("Writer::push() called on closed stream");
     set_error();
     return;
   }
@@ -24,20 +25,20 @@ void Writer::push( string data )
     buffer_.push_back( c );
   bytes_pushed_ += data.size();
 
-  debug( "Writer::push({})", data );
+  // debug("Writer::push({})", data);
 }
 
 // Signal that the stream has reached its ending. Nothing more will be written.
 void Writer::close()
 {
   is_closed_ = true;
-  debug( "Writer::close()" );
+  // debug("Writer::close()");
 }
 
 // Has the stream been closed?
 bool Writer::is_closed() const
 {
-  debug( "Writer::is_closed() -> {}", is_closed_ );
+  // debug("Writer::is_closed() -> {}", is_closed_);
   return is_closed_;
 }
 
@@ -45,14 +46,14 @@ bool Writer::is_closed() const
 uint64_t Writer::available_capacity() const
 {
   uint64_t available_capacity = capacity_ - ( bytes_pushed_ - bytes_popped_ );
-  debug( "Writer::available_capacity() -> {}", available_capacity );
+  // debug("Writer::available_capacity() -> {}", available_capacity);
   return available_capacity;
 }
 
 // Total number of bytes cumulatively pushed to the stream
 uint64_t Writer::bytes_pushed() const
 {
-  debug( "Writer::bytes_pushed() -> {}", bytes_pushed_ );
+  // debug("Writer::bytes_pushed() -> {}", bytes_pushed_);
   return bytes_pushed_;
 }
 
@@ -62,7 +63,7 @@ uint64_t Writer::bytes_pushed() const
 // the caller to do a lot of extra work.
 string_view Reader::peek() const
 {
-  debug( "Reader::peek() called" );
+  // debug("Reader::peek() called");
   if ( buffer_.empty() ) {
     return {};
   }
@@ -73,7 +74,10 @@ string_view Reader::peek() const
 // Remove `len` bytes from the buffer.
 void Reader::pop( uint64_t len )
 {
-  if ( is_finished() || len > bytes_buffered() ) {
+  if ( is_finished() )
+    return;
+  if ( len > bytes_buffered() ) {
+    // debug("Reader::pop({}) called with invalid length", len);
     set_error();
     return;
   }
@@ -81,7 +85,7 @@ void Reader::pop( uint64_t len )
   bytes_popped_ += len;
   buffer_.erase( buffer_.begin(), buffer_.begin() + len );
 
-  debug( "Reader::pop({})", len );
+  // debug("Reader::pop({})", len);
 }
 
 // Is the stream finished (closed and fully popped)?
@@ -90,7 +94,7 @@ bool Reader::is_finished() const
   bool is_empty = bytes_buffered() == 0;
   bool is_finished = is_closed_;
 
-  debug( "Reader::is_finished() -> {}", is_empty && is_finished );
+  // debug("Reader::is_finished() -> {}", is_empty && is_finished);
 
   return is_empty && is_finished;
 }
@@ -98,13 +102,13 @@ bool Reader::is_finished() const
 // Number of bytes currently buffered (pushed and not popped)
 uint64_t Reader::bytes_buffered() const
 {
-  debug( "Reader::bytes_buffered() -> {}", bytes_pushed_ - bytes_popped_ );
+  // debug("Reader::bytes_buffered() -> {}", bytes_pushed_ - bytes_popped_);
   return bytes_pushed_ - bytes_popped_;
 }
 
 // Total number of bytes cumulatively popped from stream
 uint64_t Reader::bytes_popped() const
 {
-  debug( "Reader::bytes_popped() -> {}", bytes_popped_ );
+  // debug("Reader::bytes_popped() -> {}", bytes_popped_);
   return bytes_popped_;
 }
